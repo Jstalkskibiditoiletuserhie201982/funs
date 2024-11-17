@@ -1,0 +1,120 @@
+getgenv().PinCrackerSettings = {
+Toggled = false
+}
+
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+local Notification = Instance.new("TextLabel")
+local BlackScreen = Instance.new("Frame")
+local PinLabel = Instance.new("TextLabel")
+local CopyButton = Instance.new("TextButton")
+
+ScreenGui.Parent = game.CoreGui
+
+ToggleButton.Parent = ScreenGui
+ToggleButton.Text = "Toggle Pin Cracker"
+ToggleButton.Size = UDim2.new(0, 200, 0, 50)
+ToggleButton.Position = UDim2.new(0, 0, 0, 0)
+ToggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
+ToggleButton.TextColor3 = Color3.new(0, 0, 0)
+
+BlackScreen.Parent = ScreenGui
+BlackScreen.Size = UDim2.new(1, 0, 1, 0)
+BlackScreen.Position = UDim2.new(0, 0, 0, 0)
+BlackScreen.BackgroundColor3 = Color3.new(0, 0, 0)
+BlackScreen.Visible = false
+
+Notification.Parent = BlackScreen
+Notification.Text = "Pin Cracker by 8nzrq"
+Notification.Size = UDim2.new(0, 300, 0, 50)
+Notification.Position = UDim2.new(0.5, -150, 0.5, -25)
+Notification.BackgroundColor3 = Color3.new(0, 0, 0)
+Notification.TextColor3 = Color3.new(1, 1, 1)
+Notification.Visible = false
+
+PinLabel.Parent = BlackScreen
+PinLabel.Text = ""
+PinLabel.Size = UDim2.new(0, 300, 0, 50)
+PinLabel.Position = UDim2.new(0.5, -150, 0.5, 25)
+PinLabel.BackgroundColor3 = Color3.new(0, 0, 0)
+PinLabel.TextColor3 = Color3.new(1, 1, 1)
+PinLabel.Visible = false
+
+CopyButton.Parent = BlackScreen
+CopyButton.Text = "Copy to Clipboard"
+CopyButton.Size = UDim2.new(0, 200, 0, 50)
+CopyButton.Position = UDim2.new(0.5, -100, 0.5, 75)
+CopyButton.BackgroundColor3 = Color3.new(0, 0, 0)
+CopyButton.TextColor3 = Color3.new(1, 1, 1)
+CopyButton.Visible = false
+
+ToggleButton.MouseButton1Click:Connect(function()
+PinCrackerSettings.Toggled = not PinCrackerSettings.Toggled
+ToggleButton.Text = PinCrackerSettings.Toggled and "Pin Cracker: ON" or "Pin Cracker: OFF"
+BlackScreen.Visible = PinCrackerSettings.Toggled
+Notification.Visible = PinCrackerSettings.Toggled
+PinLabel.Visible = PinCrackerSettings.Toggled
+CopyButton.Visible = PinCrackerSettings.Toggled
+
+if PinCrackerSettings.Toggled then
+-- Start pin cracking process
+spawn(function()
+while PinCrackerSettings.Toggled do
+local randomPin = string.format("%04d", math.random(0, 9999))
+PinLabel.Text = "Pin Cracker: " .. randomPin
+-- Replace this with the actual pin checking logic
+print("Pin Guesser: " .. randomPin)
+-- Simulate finding the pin
+if randomPin == "1234" then -- Replace with actual condition to check pin
+print("Pin found: " .. randomPin)
+break
+end
+wait(2) -- Wait 2 seconds before sending a new pin
+end
+end)
+end
+end)
+
+CopyButton.MouseButton1Click:Connect(function()
+if PinLabel.Text ~= "" then
+setclipboard(PinLabel.Text:sub(13)) -- Copy the pin number to clipboard
+end
+end)
+
+-- Make the buttons draggable
+local UIS = game:GetService("UserInputService")
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function update(input)
+local delta = input.Position - dragStart
+ToggleButton.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+ToggleButton.InputBegan:Connect(function(input)
+if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+dragging = true
+dragStart = input.Position
+startPos = ToggleButton.Position
+
+input.Changed:Connect(function()
+if input.UserInputState == Enum.UserInputState.End then
+dragging = false
+end
+end)
+end
+end)
+
+ToggleButton.InputChanged:Connect(function(input)
+if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+dragInput = input
+end
+end)
+
+UIS.InputChanged:Connect(function(input)
+if input == dragInput and dragging then
+update(input)
+end
+end)
