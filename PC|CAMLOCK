@@ -1,1 +1,67 @@
-loadstring(game:HttpGet("https://pastebin.com/raw/q5hSSLha"))()
+Players = game:GetService("Players"),
+RunService = game:GetService("RunService"),
+Camera = workspace.CurrentCamera,
+LocalPlayer = game:GetService("Players").LocalPlayer,
+Mouse = game:GetService("Players").LocalPlayer:GetMouse(),
+
+FindNearestEnemy = function()
+local ClosestDistance, ClosestPlayer = math.huge, nil
+local CenterPosition = Vector2.new(
+game:GetService("GuiService"):GetScreenResolution().X / 2,
+game:GetService("GuiService"):GetScreenResolution().Y / 2
+)
+
+for _, Player in ipairs(game:GetService("Players"):GetPlayers()) do
+if Player ~= Settings.LocalPlayer then
+local Character = Player.Character
+if Character and Character:FindFirstChild("HumanoidRootPart") and Character.Humanoid.Health > 0 then
+local Position, IsVisibleOnViewport = Settings.Camera:WorldToViewportPoint(Character.HumanoidRootPart.Position)
+
+if IsVisibleOnViewport then
+local Distance = (CenterPosition - Vector2.new(Position.X, Position.Y)).Magnitude
+if Distance < ClosestDistance then
+ClosestPlayer = Character.HumanoidRootPart
+ClosestDistance = Distance
+end
+end
+end
+end
+end
+return ClosestPlayer
+end
+}
+
+local enemy = nil
+
+Settings.RunService.Heartbeat:Connect(function()
+if Settings.CamlockState == true then
+if enemy then
+local targetPos = enemy.Position + enemy.Velocity * Settings.Prediction
+local currentPos = Settings.Camera.CFrame.Position
+local smoothPos = currentPos:Lerp(targetPos, Settings.Smoothness)
+Settings.Camera.CFrame = CFrame.new(Settings.Camera.CFrame.p, smoothPos)
+end
+end
+end)
+
+Settings.Mouse.KeyDown:Connect(function(k)
+if k == Settings.Key then
+Settings.Enabled = not Settings.Enabled
+if Settings.Enabled then
+enemy = Settings.FindNearestEnemy()
+Settings.CamlockState = true
+else
+if enemy ~= nil then
+enemy = nil
+Settings.CamlockState = false
+end
+end
+end
+end)
+
+print("hands up nerd, dont claim this script as urs. 8nzrq made this monkeh")
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Credits",
+    Text = "8nzrq made me, join discord.gg/blatantcc"
+})
