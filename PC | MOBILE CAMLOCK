@@ -1,8 +1,3 @@
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Credits",
-    Text = "8nzrq made me, join discord.gg/blatantcc"
-})
-
 Players = game:GetService("Players"),
 RunService = game:GetService("RunService"),
 Camera = workspace.CurrentCamera,
