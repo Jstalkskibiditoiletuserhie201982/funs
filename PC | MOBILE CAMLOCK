@@ -1,3 +1,8 @@
+game.StarterGui:SetCore("SendNotification", {
+    Title = "Credits",
+    Text = "8nzrq made me, join discord.gg/blatantcc"
+})
+
 Players = game:GetService("Players"),
 RunService = game:GetService("RunService"),
 Camera = workspace.CurrentCamera,
@@ -58,10 +63,3 @@ end
 end
 end
 end)
-
-print("hands up nerd, dont claim this script as urs. 8nzrq made this monkeh")
-
-game.StarterGui:SetCore("SendNotification", {
-    Title = "Credits",
-    Text = "8nzrq made me, join discord.gg/blatantcc"
-})
