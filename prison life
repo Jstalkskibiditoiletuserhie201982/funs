@@ -1,0 +1,234 @@
+-- LocalScript, put in StarterGui FOR STUDIO DEMO ONLY
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Workspace = game:GetService("Workspace")
+local PrisonGiver = Workspace:FindFirstChild("Prison_ITEMS") and Workspace.Prison_ITEMS:FindFirstChild("giver")
+local StarterGui = game:GetService("StarterGui")
+
+local gui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+gui.Name = "PLifePolishedGui"
+gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+-- Main Frame
+local frame = Instance.new("Frame", gui)
+frame.Position = UDim2.new(0.10, 0, 0.16, 0)
+frame.Size = UDim2.new(0, 600, 0, 320)
+frame.BackgroundColor3 = Color3.fromRGB(23, 40, 30)
+frame.Active = true
+frame.Draggable = true
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 18)
+
+-- Hide/Show Minimize Bar (draggable!)
+local minimized = false
+local miniFrame = Instance.new("Frame", gui)
+miniFrame.Size = UDim2.new(0, 220, 0, 44)
+miniFrame.Position = UDim2.new(0.5, -110, 0.14, 0)
+miniFrame.BackgroundColor3 = Color3.fromRGB(23, 40, 30)
+miniFrame.Visible = false
+miniFrame.BackgroundTransparency = 0.09
+miniFrame.Active = true
+miniFrame.Draggable = true
+Instance.new("UICorner", miniFrame).CornerRadius = UDim.new(0, 13)
+miniFrame.ZIndex = 99
+
+local scriptLabel = Instance.new("TextLabel", miniFrame)
+scriptLabel.Text = "Prison Life Script"
+scriptLabel.Size = UDim2.new(1, 0, 1, 0)
+scriptLabel.BackgroundTransparency = 1
+scriptLabel.TextColor3 = Color3.fromRGB(180,255,180)
+scriptLabel.TextSize = 19
+scriptLabel.Font = Enum.Font.GothamBold
+scriptLabel.ZIndex = 99
+
+local miniBtn = Instance.new("TextButton", miniFrame)
+miniBtn.Text = "Show"
+miniBtn.Size = UDim2.new(0, 74, 0, 34)
+miniBtn.Position = UDim2.new(1, -80, 0, 5)
+miniBtn.BackgroundColor3 = Color3.fromRGB(33,77,40)
+miniBtn.TextColor3 = Color3.fromRGB(180,255,180)
+miniBtn.Font = Enum.Font.GothamBold
+miniBtn.TextSize = 18
+miniBtn.ZIndex = 100
+Instance.new("UICorner", miniBtn).CornerRadius = UDim.new(0, 9)
+
+local hideBtn = Instance.new("TextButton", frame)
+hideBtn.Text = "Hide"
+hideBtn.Size = UDim2.new(0, 74, 0, 38)
+hideBtn.Position = UDim2.new(1, -88, 0, 4)
+hideBtn.BackgroundColor3 = Color3.fromRGB(33,77,40)
+hideBtn.TextColor3 = Color3.fromRGB(180,255,180)
+hideBtn.Font = Enum.Font.GothamBold
+hideBtn.TextSize = 18
+hideBtn.ZIndex = 5
+Instance.new("UICorner", hideBtn).CornerRadius = UDim.new(0, 9)
+
+hideBtn.MouseButton1Click:Connect(function()
+    minimized = true
+    frame.Visible = false
+    miniFrame.Visible = true
+end)
+miniBtn.MouseButton1Click:Connect(function()
+    minimized = false
+    frame.Visible = true
+    miniFrame.Visible = false
+end)
+
+--------------------------------------------------------------------------------
+------------------------ INFO TAB (YOUR REQUEST) -------------------------------
+--------------------------------------------------------------------------------
+local infoTab = Instance.new("ScrollingFrame", frame)
+infoTab.Size = UDim2.new(1,-8,1,-54)
+infoTab.Position = UDim2.new(0,4,0,48)
+infoTab.BackgroundTransparency = 1
+infoTab.CanvasSize = UDim2.new(0,0,0,210)
+infoTab.AutomaticCanvasSize = Enum.AutomaticSize.Y
+infoTab.ScrollBarThickness = 7
+local layout = Instance.new("UIListLayout", infoTab)
+layout.Padding = UDim.new(0,7)
+
+local sep = function()
+    local x = Instance.new("Frame")
+    x.Size = UDim2.new(1,0,0,1)
+    x.BackgroundColor3 = Color3.fromRGB(38, 55, 38)
+    return x
+end
+
+-- --- Local User Info
+local function labelpair(text)
+    local label = Instance.new("TextLabel")
+    label.Text = text
+    label.TextSize = 18
+    label.Font = Enum.Font.GothamBold
+    label.TextColor3 = Color3.fromRGB(235,255,200)
+    label.BackgroundTransparency = 1
+    label.Size = UDim2.new(1, -6, 0, 27)
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    return label
+end
+
+local myName = labelpair("Username: " .. LocalPlayer.Name)
+myName.Parent = infoTab
+local myDisp = labelpair("Display Name: " .. LocalPlayer.DisplayName)
+myDisp.Parent = infoTab
+local myAge = labelpair("Account Age: " .. tostring(LocalPlayer.AccountAge))
+myAge.Parent = infoTab
+
+local divider = sep()
+divider.Parent = infoTab
+
+local checkPrompt = Instance.new("TextLabel", infoTab)
+checkPrompt.Text = "Check Other Player Info:"
+checkPrompt.TextSize = 16
+checkPrompt.Font = Enum.Font.GothamBold
+checkPrompt.TextColor3 = Color3.fromRGB(180,240,200)
+checkPrompt.BackgroundTransparency = 1
+checkPrompt.Size = UDim2.new(1, -6, 0, 22)
+checkPrompt.TextXAlignment = Enum.TextXAlignment.Left
+
+local playerDrop = Instance.new("TextBox", infoTab)
+playerDrop.Text = ""
+playerDrop.PlaceholderText = "Type username/displayname and hit Enter"
+playerDrop.TextColor3 = Color3.fromRGB(215,215,215)
+playerDrop.BackgroundColor3 = Color3.fromRGB(40,60,40)
+playerDrop.Size = UDim2.new(1,-8,0,30)
+playerDrop.Font = Enum.Font.Gotham
+playerDrop.TextSize = 15
+
+local plinfo1 = labelpair("Username: ")
+plinfo1.Parent = infoTab
+local plinfo2 = labelpair("Display Name: ")
+plinfo2.Parent = infoTab
+local plinfo3 = labelpair("Account Age: ")
+plinfo3.Parent = infoTab
+
+playerDrop.FocusLost:Connect(function(enter)
+    if not enter then return end
+    local input = playerDrop.Text:lower()
+    local found = nil
+    for _,plr in ipairs(Players:GetPlayers()) do
+        if plr.Name:lower():find(input) or plr.DisplayName:lower():find(input) then
+            found = plr
+            break
+        end
+    end
+    if found then
+        plinfo1.Text = "Username: " .. found.Name
+        plinfo2.Text = "Display Name: " .. found.DisplayName
+        plinfo3.Text = "Account Age: " .. tostring(found.AccountAge)
+    else
+        plinfo1.Text = "Username: (Not found)"
+        plinfo2.Text = "Display Name: (N/A)"
+        plinfo3.Text = "Account Age: (N/A)"
+    end
+end)
+
+--------------------------------------------------------------------------------
+----------------------- GRAB WEAPONS TAB (STUDIO ONLY) -------------------------
+--------------------------------------------------------------------------------
+local grabTab = Instance.new("Frame", frame)
+grabTab.Size = UDim2.new(1,-8,1,-54)
+grabTab.Position = UDim2.new(0,4,0,48)
+grabTab.BackgroundTransparency = 1
+grabTab.Visible = false
+
+local gunList = {
+    {"AK-47", "AK-47"},
+    {"Remington 870", "Remington 870"},
+    {"MP5", "MP5"}
+}
+
+local gunLabel = Instance.new("TextLabel", grabTab)
+gunLabel.Text = "Grab a gun instantly (in Studio):"
+gunLabel.TextSize = 18
+gunLabel.Font = Enum.Font.GothamBold
+gunLabel.Size = UDim2.new(1, -10, 0, 36)
+gunLabel.BackgroundTransparency = 1
+gunLabel.TextColor3 = Color3.fromRGB(220,240,170)
+
+for i,entry in ipairs(gunList) do
+    local name, toolname = entry[1], entry[2]
+    local btn = Instance.new("TextButton", grabTab)
+    btn.Text = "Grab "..name
+    btn.Size = UDim2.new(1,-20,0,36)
+    btn.Position = UDim2.new(0, 10, 0, 36+43*(i-1))
+    btn.BackgroundColor3 = Color3.fromRGB(110,120,140)
+    btn.TextColor3 = Color3.fromRGB(230,240,255)
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 17
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,9)
+
+    btn.MouseButton1Click:Connect(function()
+        local backpack = LocalPlayer:FindFirstChild("Backpack") or LocalPlayer.Backpack
+        if not backpack or not PrisonGiver then btn.Text = "Not Found"; return end
+        local tool = PrisonGiver:FindFirstChild(toolname)
+        if tool and not backpack:FindFirstChild(tool.Name) then
+            tool:Clone().Parent = backpack
+            btn.Text = "Grabbed "..name.."!"
+        elseif backpack:FindFirstChild(toolname) then
+            btn.Text = "Already Have"
+        else
+            btn.Text = "Not Found"
+        end
+        wait(1.2)
+        btn.Text = "Grab "..name
+    end)
+end
+
+-- TAB SYSTEM: Only show infoTab (default) or grabTab with keys 1-2 (change as needed)
+local currentTab = "info"
+local function ShowTab(t)
+    infoTab.Visible = t == "info"
+    grabTab.Visible = t == "grab"
+end
+ShowTab("info")
+-- For demo, use Tab keyswap in Studio:
+game:GetService("UserInputService").InputBegan:Connect(function(input, processed)
+    if processed then return end
+    if input.KeyCode == Enum.KeyCode.One then
+        ShowTab("info")
+    elseif input.KeyCode == Enum.KeyCode.Two then
+        ShowTab("grab")
+    end
+end)
+
+-- (You can adapt this to button tab switching too)
